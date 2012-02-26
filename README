@@ -1,5 +1,6 @@
 WODeploy is a combination of scripts that make for easy deployment. 
 
+Teaser:http://www.youtube.co/watch?v=xWoMy_MdJgI
 
 Auto Deployment is handled by the commit hook in:
 Resources/opt/subversion/repository/hooks/post-commit
