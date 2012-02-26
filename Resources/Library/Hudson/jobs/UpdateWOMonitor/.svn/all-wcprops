@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/104/Configurations/trunk/Resources/Library/Hudson/jobs/UpdateWOMonitor
+END
+config.xml
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/!svn/ver/112/Configurations/trunk/Resources/Library/Hudson/jobs/UpdateWOMonitor/config.xml
+END
+updateWOMonitor.sh
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/!svn/ver/135/Configurations/trunk/Resources/Library/Hudson/jobs/UpdateWOMonitor/updateWOMonitor.sh
+END

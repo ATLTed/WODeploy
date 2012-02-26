@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/62/Configurations/trunk/Resources/Library/Hudson/Dependencies
+END
+download-WOInstaller.sh
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/!svn/ver/62/Configurations/trunk/Resources/Library/Hudson/Dependencies/download-WOInstaller.sh
+END
+deployWOApp.sh
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/!svn/ver/114/Configurations/trunk/Resources/Library/Hudson/Dependencies/deployWOApp.sh
+END
+setupWorkspace.sh
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/62/Configurations/trunk/Resources/Library/Hudson/Dependencies/setupWorkspace.sh
+END
+woproject.jar
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/!svn/ver/62/Configurations/trunk/Resources/Library/Hudson/Dependencies/woproject.jar
+END

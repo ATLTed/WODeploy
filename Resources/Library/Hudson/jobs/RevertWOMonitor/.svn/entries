@@ -1,0 +1,54 @@
+8
+
+dir
+104
+http://woserver.archtransco.com/svn/Configurations/trunk/Resources/Library/Hudson/jobs/RevertWOMonitor
+http://woserver.archtransco.com/svn
+
+
+
+2010-11-25T19:56:11.123235Z
+104
+tedarchibald
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0789d924-e2fe-4310-bccf-9e8c3103a9eb
+
+config.xml
+file
+108
+
+
+
+2010-11-27T01:16:59.000000Z
+7efcc677011a1e48676ab01f924834a3
+2010-11-25T21:36:33.042317Z
+108
+tedarchibald
+has-props
+
+revertWOMonitor.sh
+file
+135
+
+
+
+2010-11-27T21:32:39.000000Z
+66dd520072cabd40cb18810f836d0275
+2010-11-27T21:57:34.552845Z
+135
+tedarchibald
+has-props
+

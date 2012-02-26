@@ -1,0 +1,76 @@
+#!/bin/bash
+REPOS="$1"
+REV="$2"
+THE_APP_NAME=`svnlook changed ${REPOS} --revision ${REV} | head -1 | perl -lne 'print $1 if /\s+([^\/]*)/i;'`
+HUDSON_LOCATION=/Library/Hudson/
+HUDSON_URL=http://localhost:8080/hudson
+HUDSON_CLI=/usr/local/tomcat/webapps/hudson/WEB-INF/hudson-cli.jar
+MYSQL=/usr/local/mysql/bin/mysql
+MYSQL_USER=webobjects
+MYSQL_PASS=8ZVujsgq4jCivQxenDDA
+THE_HOST_NAME=`hostname`
+JAVAMONITOR_PORT="56789"
+HTTP=http
+WEBAPP_LOCATION=/Library/WebObjects/Applications
+WEBSERVER_LOCATION=/Library/WebServer/Documents
+#JAVAMONITOR_URL=${HTTP}://${THE_HOST_NAME}:${JAVAMONITOR_PORT}/cgi-bin/WebObjects/JavaMonitor.woa
+JAVAMONITOR_URL=${HTTP}://${THE_HOST_NAME}/WOMonitor
+JAVAMONITOR_PW=wolips
+
+if [ "${THE_APP_NAME}" == "Configurations" ] ; then
+	curl "${HUDSON_URL}/job/UpdateConfigurations/build?delay=0sec"
+else
+	
+	#If Application
+	PROJECT_TYPE=`svnlook cat ${REPOS} ${THE_APP_NAME}/trunk/build.properties | grep project.type`
+	if [ "${PROJECT_TYPE}" == "project.type=application" ] ; then
+		
+		#Create Database
+		DB_EXISTS=`${MYSQL} -e "show databases" -u${MYSQL_USER} -p${MYSQL_PASS} | grep "^${THE_APP_NAME}$"`
+		if [ "${DB_EXISTS}" != "${THE_APP_NAME}" ] ; then
+			${MYSQL} -e "Create Database ${THE_APP_NAME}" -u${MYSQL_USER} -p${MYSQL_PASS}
+		fi
+		
+		echo "Debug 1, " > /tmp/debug.txt
+		echo -e "\nRewriteRule ^${THE_APP_NAME}/(.*)\$ /cgi-bin/WebObjects/${THE_APP_NAME}.woa/\$1 [NC,PT,L]\nRewriteRule ^${THE_APP_NAME}$ /cgi-bin/WebObjects/${THE_APP_NAME}.woa [NC,PT,L]\n" >> /tmp/debug.txt
+		#echo "${THE_APP_NAME}" >> /tmp/debug.txt
+		#cat ${WEBSERVER_LOCATION}/.htaccess >> /tmp/debug.txt
+		#Add rewrite in htaccess file
+		HAS_HTACCESS_ENTRY=`cat ${WEBSERVER_LOCATION}/.htaccess | grep "/cgi-bin/WebObjects/${THE_APP_NAME}.woa " | cut -c1-11`
+		if [ "${HAS_HTACCESS_ENTRY}" != "RewriteRule" ] ; then 
+			echo -e "\nRewriteRule ^${THE_APP_NAME}/(.*)\$ /cgi-bin/WebObjects/${THE_APP_NAME}.woa/\$1 [NC,PT,L]\nRewriteRule ^${THE_APP_NAME}$ /cgi-bin/WebObjects/${THE_APP_NAME}.woa [NC,PT,L]\n" >> ${WEBSERVER_LOCATION}/.htaccess
+		fi
+		
+		#Create the job in hudson
+		HAS_HUDSON_JOB=`java -jar ${HUDSON_CLI} -s ${HUDSON_URL} enable-job ${THE_APP_NAME} 2>&1 | grep "No such job" | cut -c1-11`
+		if [ "${HAS_HUDSON_JOB}" == "No such job" ] ; then
+			#Create Hudson Job App
+			echo -e "<?xml version='1.0' encoding='UTF-8'?>\n<project>\n  <actions/>\n  <description></description>\n  <keepDependencies>false</keepDependencies>\n  <properties/>\n  <scm class=\"hudson.scm.SubversionSCM\">\n    <locations>\n      <hudson.scm.SubversionSCM_-ModuleLocation>\n        <remote>http://woserver.archtransco.com/svn/${THE_APP_NAME}/trunk</remote>\n        <local>.</local>\n      </hudson.scm.SubversionSCM_-ModuleLocation>\n    </locations>\n    <useUpdate>true</useUpdate>\n    <doRevert>false</doRevert>\n    <excludedRegions></excludedRegions>\n    <excludedUsers></excludedUsers>\n    <excludedRevprop></excludedRevprop>\n    <excludedCommitMessages></excludedCommitMessages>\n  </scm>\n  <canRoam>true</canRoam>\n  <disabled>false</disabled>\n  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>\n  <triggers class=\"vector\"/>\n  <concurrentBuild>false</concurrentBuild>\n  <builders>\n    <hudson.tasks.Shell>\n      <command>/Library/Hudson/Dependencies/setupWorkspace.sh &quot;\$WORKSPACE&quot; 54</command>\n    </hudson.tasks.Shell>\n    <hudson.tasks.Ant>\n      <targets>-propertyfile \${WORKSPACE}/Root/wolips.properties  -lib \${WORKSPACE}/Root/lib clean build</targets>\n    </hudson.tasks.Ant>\n  </builders>\n  <publishers>\n    <hudson.tasks.ArtifactArchiver>\n      <artifacts>dist/*.tar.gz</artifacts>\n      <latestOnly>false</latestOnly>\n    </hudson.tasks.ArtifactArchiver>\n    <hudson.plugins.emotional__hudson.EmotionalHudsonPublisher/>\n    <hudson.plugins.postbuildtask.PostbuildTask>\n      <tasks>\n        <hudson.plugins.postbuildtask.TaskProperties>\n          <logTexts>\n            <hudson.plugins.postbuildtask.LogProperties>\n              <logText>BUILD SUCCESSFUL</logText>\n              <operator>AND</operator>\n            </hudson.plugins.postbuildtask.LogProperties>\n          </logTexts>\n          <script>/Library/Hudson/Dependencies/deployWOApp.sh -p wolips -P 80</script>\n        </hudson.plugins.postbuildtask.TaskProperties>\n      </tasks>\n    </hudson.plugins.postbuildtask.PostbuildTask>\n  </publishers>\n  <buildWrappers/>\n</project>" | java -jar ${HUDSON_CLI} -s ${HUDSON_URL} create-job ${THE_APP_NAME}
+		fi
+		
+		#If the project is an app, then create a new app in WOMonitor
+		APP_EXISTS=`curl -s "${JAVAMONITOR_URL}/admin/running?type=app&name=${THE_APP_NAME}&pw=${JAVAMONITOR_PW}"`
+		if [ "${APP_EXISTS}" == "running action failed: Unknown application ${THE_APP_NAME}" ] ; then
+			#add new app
+			curl -X POST -d "{id: '${THE_APP_NAME}',type: 'MApplication', name: '${THE_APP_NAME}', additionalArgs:'-Duser.name=deploy -Der.extensions.ERXApplication.replaceApplicationPath.pattern=/cgi-bin/WebObjects/${THE_APP_NAME}.woa -Der.extensions.ERXApplication.replaceApplicationPath.replace=/${THE_APP_NAME}', macOutputPath: '/Library/Logs/WebObjects', macPath: '/Library/WebObjects/Applications/${THE_APP_NAME}.woa/${THE_APP_NAME}', unixOutputPath: '/Library/Logs/WebObjects', unixPath: '/Library/WebObjects/Applications/${THE_APP_NAME}.woa/${THE_APP_NAME}'}" "${JAVAMONITOR_URL}/ra/mApplications.json?&pw=${JAVAMONITOR_PW}"
+			#add new instance
+			curl -X GET "${JAVAMONITOR_URL}/ra/mApplications/${THE_APP_NAME}/addInstance?host=localhost&pw=${JAVAMONITOR_PW}"
+		fi
+		
+		#Build it
+		curl "${HUDSON_URL}/job/${THE_APP_NAME}/build?delay=0sec"
+		
+		
+	elif [ "${PROJECT_TYPE}" == "project.type=framework" ] ; then
+		#Create Hudson Job Framework
+		HAS_HUDSON_JOB=`java -jar ${HUDSON_CLI} -s ${HUDSON_URL} enable-job ${THE_APP_NAME} 2>&1 | grep "No such job" | cut -c1-11`
+		if [ "${HAS_HUDSON_JOB}" == "No such job" ] ; then
+			#Create Hudson Job Framework
+			echo -e "<?xml version='1.0' encoding='UTF-8'?>\n<project>\n  <actions/>\n  <description></description>\n  <keepDependencies>false</keepDependencies>\n  <properties/>\n  <scm class=\"hudson.scm.SubversionSCM\">\n    <locations>\n      <hudson.scm.SubversionSCM_-ModuleLocation>\n        <remote>http://woserver.archtransco.com/svn/${THE_APP_NAME}/trunk</remote>\n        <local>.</local>\n      </hudson.scm.SubversionSCM_-ModuleLocation>\n    </locations>\n    <useUpdate>true</useUpdate>\n    <doRevert>false</doRevert>\n    <excludedRegions></excludedRegions>\n    <excludedUsers></excludedUsers>\n    <excludedRevprop></excludedRevprop>\n    <excludedCommitMessages></excludedCommitMessages>\n  </scm>\n  <canRoam>true</canRoam>\n  <disabled>false</disabled>\n  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>\n  <triggers class=\"vector\"/>\n  <concurrentBuild>false</concurrentBuild>\n  <builders>\n    <hudson.tasks.Shell>\n      <command>/Library/Hudson/Dependencies/setupWorkspace.sh &quot;\$WORKSPACE&quot; 54</command>\n    </hudson.tasks.Shell>\n    <hudson.tasks.Ant>\n      <targets>-propertyfile \${WORKSPACE}/Root/wolips.properties  -lib \${WORKSPACE}/Root/lib clean build</targets>\n    </hudson.tasks.Ant>\n  </builders>\n  <publishers>\n    <hudson.tasks.ArtifactArchiver>\n      <artifacts>dist/*.tar.gz</artifacts>\n      <latestOnly>false</latestOnly>\n    </hudson.tasks.ArtifactArchiver>\n    <hudson.plugins.emotional__hudson.EmotionalHudsonPublisher/>\n    <hudson.plugins.postbuildtask.PostbuildTask>\n      <tasks>\n        <hudson.plugins.postbuildtask.TaskProperties>\n          <logTexts>\n            <hudson.plugins.postbuildtask.LogProperties>\n              <logText>BUILD SUCCESSFUL</logText>\n              <operator>AND</operator>\n            </hudson.plugins.postbuildtask.LogProperties>\n          </logTexts>\n          <script>/Library/Hudson/Dependencies/deployWOFramework.sh</script>\n        </hudson.plugins.postbuildtask.TaskProperties>\n      </tasks>\n    </hudson.plugins.postbuildtask.PostbuildTask>\n  </publishers>\n  <buildWrappers/>\n</project>" | java -jar ${HUDSON_CLI} -s ${HUDSON_URL} create-job ${THE_APP_NAME}
+		fi
+		
+		#Build it
+		curl "${HUDSON_URL}/job/${THE_APP_NAME}/build?delay=0sec"
+	fi
+	
+fi

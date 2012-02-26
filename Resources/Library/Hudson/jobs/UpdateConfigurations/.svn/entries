@@ -1,0 +1,54 @@
+8
+
+dir
+105
+http://woserver.archtransco.com/svn/Configurations/trunk/Resources/Library/Hudson/jobs/UpdateConfigurations
+http://woserver.archtransco.com/svn
+
+
+
+2010-11-25T20:22:44.932529Z
+105
+tedarchibald
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0789d924-e2fe-4310-bccf-9e8c3103a9eb
+
+config.xml
+file
+108
+
+
+
+2010-11-25T21:30:25.000000Z
+2985584fa1d58854ae05a4e70c4f95c5
+2010-11-25T21:36:33.042317Z
+108
+tedarchibald
+has-props
+
+updateConfigurations.sh
+file
+157
+
+
+
+2010-11-30T02:16:29.000000Z
+be82a480c33b1daa452eb0cec01b8e3e
+2010-11-30T02:16:47.118857Z
+157
+tedarchibald
+has-props
+

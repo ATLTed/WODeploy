@@ -1,0 +1,34 @@
+8
+
+dir
+60
+http://woserver.archtransco.com/svn/Configurations/trunk/Resources/Library
+http://woserver.archtransco.com/svn
+
+
+
+2010-05-17T14:32:43.421797Z
+60
+tedarchibald
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0789d924-e2fe-4310-bccf-9e8c3103a9eb
+
+Hudson
+dir
+
+LaunchDaemons
+dir
+

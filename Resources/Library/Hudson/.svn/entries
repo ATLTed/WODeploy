@@ -1,0 +1,46 @@
+8
+
+dir
+62
+http://woserver.archtransco.com/svn/Configurations/trunk/Resources/Library/Hudson
+http://woserver.archtransco.com/svn
+
+
+
+2010-05-18T11:57:42.598396Z
+62
+tedarchibald
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0789d924-e2fe-4310-bccf-9e8c3103a9eb
+
+Dependencies
+dir
+
+downloadHudson.sh
+file
+152
+
+
+
+2010-11-28T03:51:20.000000Z
+a1472b9cb83c2b6b24b6dc168165cc75
+2010-11-28T03:51:34.043626Z
+152
+tedarchibald
+
+jobs
+dir
+

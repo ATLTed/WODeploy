@@ -1,0 +1,54 @@
+8
+
+dir
+90
+http://woserver.archtransco.com/svn/Configurations/trunk/Resources/Library/Hudson/jobs/UpdateWonder
+http://woserver.archtransco.com/svn
+
+
+
+2010-05-18T18:20:34.908927Z
+90
+tedarchibald
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+0789d924-e2fe-4310-bccf-9e8c3103a9eb
+
+config.xml
+file
+108
+
+
+
+2010-11-25T21:27:34.000000Z
+08860e6e790d27b10a60f438bc134808
+2010-11-25T21:36:33.042317Z
+108
+tedarchibald
+has-props
+
+updateWonder.sh
+file
+153
+
+
+
+2010-11-30T00:49:57.000000Z
+fa85d25d25f8f4c00c730c18105dabc3
+2010-11-30T00:50:25.188958Z
+153
+tedarchibald
+has-props
+

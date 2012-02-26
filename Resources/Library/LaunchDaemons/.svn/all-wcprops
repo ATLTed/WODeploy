@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/60/Configurations/trunk/Resources/Library/LaunchDaemons
+END
+org.apache.tomcat.plist
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/!svn/ver/139/Configurations/trunk/Resources/Library/LaunchDaemons/org.apache.tomcat.plist
+END
+com.webobjects.wotaskd.plist
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/!svn/ver/60/Configurations/trunk/Resources/Library/LaunchDaemons/com.webobjects.wotaskd.plist
+END
+com.mysql.mysqld
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/!svn/ver/60/Configurations/trunk/Resources/Library/LaunchDaemons/com.mysql.mysqld
+END
+org.apache.apache2.plist
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/!svn/ver/60/Configurations/trunk/Resources/Library/LaunchDaemons/org.apache.apache2.plist
+END
