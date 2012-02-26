@@ -2,22 +2,26 @@
 REPOS="$1"
 REV="$2"
 
-MYSQL=/usr/local/mysql/bin/mysql
-MYSQL_USER=webobjects
-MYSQL_PASS=wolips
+#User/Passwords
+MYSQL_USER=changeme
+MYSQL_PASS=password
 JAVAMONITOR_PW=wolips
 
-JAVAMONITOR_PORT="56789"
-HTTP=http
-THE_HOST_NAME=`hostname`
-JAVAMONITOR_URL=${HTTP}://${THE_HOST_NAME}:${JAVAMONITOR_PORT}/cgi-bin/WebObjects/JavaMonitor.woa
-WEBAPP_LOCATION=/Library/WebObjects/Applications
-WEBSERVER_LOCATION=/Library/WebServer/Documents
+MYSQL=/usr/local/mysql/bin/mysql
 HUDSON_LOCATION=/Library/Hudson/
 HUDSON_URL=http://localhost:8080/hudson
 HUDSON_CLI=/usr/local/tomcat/webapps/hudson/WEB-INF/hudson-cli.jar
-THE_APP_NAME=`svnlook changed ${REPOS} --revision ${REV} | head -1 | perl -lne 'print $1 if /\s+([^\/]*)/i;'`
 
+
+THE_HOST_NAME=`hostname`
+JAVAMONITOR_PORT="56789"
+HTTP=http
+WEBAPP_LOCATION=/Library/WebObjects/Applications
+WEBSERVER_LOCATION=/Library/WebServer/Documents
+JAVAMONITOR_URL=${HTTP}://${THE_HOST_NAME}:${JAVAMONITOR_PORT}/cgi-bin/WebObjects/JavaMonitor.woa
+#JAVAMONITOR_URL=${HTTP}://${THE_HOST_NAME}/WOMonitor
+
+THE_APP_NAME=`svnlook changed ${REPOS} --revision ${REV} | head -1 | perl -lne 'print $1 if /\s+([^\/]*)/i;'`
 if [ "${THE_APP_NAME}" == "Configurations" ] ; then
 	curl "${HUDSON_URL}/job/UpdateConfigurations/build?delay=0sec"
 else
