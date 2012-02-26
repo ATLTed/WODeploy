@@ -1,0 +1,26 @@
+WODeploy is a combination of scripts that make for easy deployment. 
+
+
+Auto Deployment is handled by the commit hook in:
+Resources/opt/subversion/repository/hooks/post-commit
+
+Which does the following:
+-Creates a new database
+-Creates a new hudson job
+-Creates a new JavaMonitor App/Instance (and also adds the arguments: user = deploy and erx rewrite rules to server.com/AppName)
+-Adds the rewrite rules server.com/AppName to .htaccess
+
+
+Deployment is handled by:
+Resources/Library/Hudson/Dependencies/deployWOApp.sh
+Resources/Library/Hudson/Dependencies/deployWOFramework.sh
+
+Which does the following:
+-Versions the previous running app/webserver resources
+-Shuts down the current instance
+-Installs the current app into the respective directories
+-Restarts the app
+
+There are other extras including my scripts for upgrading and downgrading Wonder and WOMonitor (check out Resources/Library/Hudson/jobs).  I also have launchd files for apache, mysql, wotaskd and tomcat (which also requires the script in Resources/usr/local/tomcat/bin/launchd_tomcat.sh.
+
+*I haven't renamed everything for jenkins instead of hudson...
